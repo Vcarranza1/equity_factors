@@ -1,0 +1,28 @@
+{
+  "run_timestamp": "2026-04-25T02:28:20.823743",
+  "n_tickers": 503,
+  "price": {
+    "n_covered": 502,
+    "pct_covered": 99.8,
+    "n_full_history_to_2009": 419,
+    "gate": ">= 95% with >= 13 months data",
+    "pass": true
+  },
+  "pb": {
+    "n_covered": 0,
+    "pct_covered": 0.0,
+    "gate": ">= 90%",
+    "pass": false,
+    "median_obs_per_ticker": 0,
+    "note": "Empty if SIMFIN_API_KEY not set"
+  },
+  "spy": {
+    "n_months": 196,
+    "ann_return_pct": 14.33,
+    "ann_vol_pct": 14.71,
+    "sharpe": 0.974,
+    "period": "2010-01 \u2192 2026-04"
+  },
+  "phase_b_decision": "PASS (momentum-only) \u2014 P/B coverage insufficient; drop value factor",
+  "survivorship_bias_note": "Using current S&P 500 constituents. Pre-committed haircut: -0.10 to -0.20 excess Sharpe on gross result."
+}
