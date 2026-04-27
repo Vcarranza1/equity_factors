@@ -1,7 +1,7 @@
 # Equity Factor Lab — Spec
 
 **Date initialized**: 2026-04-25
-**Status**: Phase B — data pipeline
+**Status**: CLOSED — E1 killed 2026-04-27
 **Repository**: `equity_factors`
 
 ---
@@ -143,10 +143,10 @@ This decision is made in Phase B before any backtest is run.
 | Phase | Name | Gate | Status |
 |-------|------|------|--------|
 | A | Specification | Document approved | ✅ Complete (2026-04-25) |
-| B | Data pipeline | Price coverage ≥ 95%; P/B coverage ≥ 90% | 🔄 Active |
-| C | Backtest | All three gates pass | Not started |
-| D | Diagnostic | Attribution, regime, constituent analysis | Not started |
-| E | Decision | Live or kill | Not started |
+| B | Data pipeline | Price coverage ≥ 95%; P/B coverage ≥ 90% | ✅ Complete (2026-04-26) — price 99.8% PASS; P/B 74.8% FAIL → momentum-only |
+| C | Backtest | All three gates pass | ✅ Complete (2026-04-27) — FAIL (Excess Sharpe 0.208 < 0.30) |
+| D | Diagnostic | Attribution, regime, constituent analysis | ✅ Complete (2026-04-27) — see killed_findings.md |
+| E | Decision | Live or kill | ✅ KILLED (2026-04-27) |
 
 **Stop between every phase. Explicit approval required to proceed.**
 
@@ -164,7 +164,7 @@ This decision is made in Phase B before any backtest is run.
 - [x] Stress months: 2011-08, 2015-08, 2018-02, 2020-03, 2022-01
 - [x] Momentum adversarial periods: 2018-09 to 2018-12, 2020-05
 - [x] No post-hoc direction reversal, factor substitution, or quintile adjustment
-- [ ] Phase B data validation complete (gate: price ≥ 95%, P/B ≥ 90%)
+- [x] Phase B data validation complete — price 99.8% PASS; P/B 74.8% FAIL → value dropped, momentum-only per pre-commitment
 
 ---
 
@@ -197,6 +197,10 @@ This decision is made in Phase B before any backtest is run.
 | Date | Decision | Approved by |
 |------|----------|-------------|
 | 2026-04-25 | Phase A spec approved; Simfin confirmed; stress months + adversarial periods locked | Victor Carranza |
+| 2026-04-26 | Phase B complete — P/B coverage 74.8% < 90% gate; value factor permanently dropped; E1 reduces to momentum-only per pre-commitment | Victor Carranza |
+| 2026-04-27 | Phase C complete — momentum-only fails Excess Sharpe gate (0.208 < 0.30); IR 0.762 PASS, Max active DD −13.4% PASS; overall FAIL | Victor Carranza |
+| 2026-04-27 | Phase D complete — kill diagnostic run; alpha real but insufficient; bias-adjusted mid-Sharpe +0.058; three post-hoc variations found (not actionable) | Victor Carranza |
+| 2026-04-27 | **E1 KILLED** — Phase C gate failure. No reformulation. See `lab/e1_value_momentum/killed_findings.md`. | Victor Carranza |
 
 ---
 

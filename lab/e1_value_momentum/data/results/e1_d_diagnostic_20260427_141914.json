@@ -1,0 +1,316 @@
+{
+  "run_timestamp": "2026-04-27T14:19:14.360705",
+  "d1_regime": {
+    "by_year": {
+      "2010": {
+        "n": 10,
+        "strat_sharpe": 1.44,
+        "spy_sharpe": 0.936,
+        "excess_sharpe": 2.33,
+        "cum_excess_pct": 15.1
+      },
+      "2011": {
+        "n": 12,
+        "strat_sharpe": 0.121,
+        "spy_sharpe": 0.181,
+        "excess_sharpe": -0.066,
+        "cum_excess_pct": -0.6
+      },
+      "2012": {
+        "n": 12,
+        "strat_sharpe": 2.481,
+        "spy_sharpe": 1.479,
+        "excess_sharpe": 1.621,
+        "cum_excess_pct": 7.7
+      },
+      "2013": {
+        "n": 12,
+        "strat_sharpe": 3.886,
+        "spy_sharpe": 3.084,
+        "excess_sharpe": 2.612,
+        "cum_excess_pct": 13.0
+      },
+      "2014": {
+        "n": 12,
+        "strat_sharpe": 1.302,
+        "spy_sharpe": 1.594,
+        "excess_sharpe": 0.125,
+        "cum_excess_pct": 0.7
+      },
+      "2015": {
+        "n": 12,
+        "strat_sharpe": 0.667,
+        "spy_sharpe": 0.147,
+        "excess_sharpe": 0.597,
+        "cum_excess_pct": 5.1
+      },
+      "2016": {
+        "n": 12,
+        "strat_sharpe": 0.663,
+        "spy_sharpe": 1.228,
+        "excess_sharpe": -0.535,
+        "cum_excess_pct": -3.7
+      },
+      "2017": {
+        "n": 12,
+        "strat_sharpe": 4.24,
+        "spy_sharpe": 4.391,
+        "excess_sharpe": 1.313,
+        "cum_excess_pct": 5.4
+      },
+      "2018": {
+        "n": 12,
+        "strat_sharpe": 0.129,
+        "spy_sharpe": -0.227,
+        "excess_sharpe": 0.643,
+        "cum_excess_pct": 5.8
+      },
+      "2019": {
+        "n": 12,
+        "strat_sharpe": 2.197,
+        "spy_sharpe": 2.162,
+        "excess_sharpe": 0.007,
+        "cum_excess_pct": -0.2
+      },
+      "2020": {
+        "n": 12,
+        "strat_sharpe": 1.057,
+        "spy_sharpe": 0.766,
+        "excess_sharpe": 1.659,
+        "cum_excess_pct": 8.5
+      },
+      "2021": {
+        "n": 12,
+        "strat_sharpe": 2.149,
+        "spy_sharpe": 2.302,
+        "excess_sharpe": -0.342,
+        "cum_excess_pct": -2.6
+      },
+      "2022": {
+        "n": 12,
+        "strat_sharpe": -0.066,
+        "spy_sharpe": -0.738,
+        "excess_sharpe": 2.01,
+        "cum_excess_pct": 16.7
+      },
+      "2023": {
+        "n": 12,
+        "strat_sharpe": 0.891,
+        "spy_sharpe": 1.659,
+        "excess_sharpe": -0.844,
+        "cum_excess_pct": -7.8
+      },
+      "2024": {
+        "n": 12,
+        "strat_sharpe": 2.049,
+        "spy_sharpe": 2.202,
+        "excess_sharpe": 1.576,
+        "cum_excess_pct": 17.0
+      },
+      "2025": {
+        "n": 12,
+        "strat_sharpe": 1.305,
+        "spy_sharpe": 1.534,
+        "excess_sharpe": 0.445,
+        "cum_excess_pct": 3.4
+      },
+      "2026": {
+        "n": 4,
+        "strat_sharpe": 1.804,
+        "spy_sharpe": 0.779,
+        "excess_sharpe": 3.803,
+        "cum_excess_pct": 11.2
+      }
+    },
+    "by_regime": {
+      "2010\u20132013": {
+        "n": 46,
+        "strat_sharpe": 1.446,
+        "spy_sharpe": 1.147,
+        "excess_sharpe": 1.466,
+        "cum_excess_pct": 39.1
+      },
+      "2014\u20132016": {
+        "n": 36,
+        "strat_sharpe": 0.884,
+        "spy_sharpe": 0.826,
+        "excess_sharpe": 0.122,
+        "cum_excess_pct": 1.9
+      },
+      "2017\u20132019": {
+        "n": 36,
+        "strat_sharpe": 1.344,
+        "spy_sharpe": 1.202,
+        "excess_sharpe": 0.52,
+        "cum_excess_pct": 11.3
+      },
+      "2020\u20132022": {
+        "n": 36,
+        "strat_sharpe": 0.774,
+        "spy_sharpe": 0.447,
+        "excess_sharpe": 1.04,
+        "cum_excess_pct": 23.2
+      },
+      "2023\u20132026": {
+        "n": 40,
+        "strat_sharpe": 1.507,
+        "spy_sharpe": 1.637,
+        "excess_sharpe": 0.722,
+        "cum_excess_pct": 24.1
+      }
+    }
+  },
+  "d2_sector": {
+    "Information Technology": {
+      "avg_portfolio_weight": 0.1873,
+      "sp500_equal_weight": 0.1451,
+      "overweight": 0.0422,
+      "total_contrib_pct": 41.34,
+      "avg_monthly_ret_pct": 2.408,
+      "months_represented": 194
+    },
+    "Industrials": {
+      "avg_portfolio_weight": 0.1557,
+      "sp500_equal_weight": 0.1571,
+      "overweight": -0.0013,
+      "total_contrib_pct": 19.27,
+      "avg_monthly_ret_pct": 1.867,
+      "months_represented": 194
+    },
+    "Consumer Discretionary": {
+      "avg_portfolio_weight": 0.1324,
+      "sp500_equal_weight": 0.0954,
+      "overweight": 0.0369,
+      "total_contrib_pct": 19.2,
+      "avg_monthly_ret_pct": 2.026,
+      "months_represented": 194
+    },
+    "Communication Services": {
+      "avg_portfolio_weight": 0.0524,
+      "sp500_equal_weight": 0.0457,
+      "overweight": 0.0067,
+      "total_contrib_pct": 6.3,
+      "avg_monthly_ret_pct": 1.828,
+      "months_represented": 193
+    },
+    "Health Care": {
+      "avg_portfolio_weight": 0.1162,
+      "sp500_equal_weight": 0.1153,
+      "overweight": 0.0009,
+      "total_contrib_pct": 5.69,
+      "avg_monthly_ret_pct": 1.567,
+      "months_represented": 194
+    },
+    "Energy": {
+      "avg_portfolio_weight": 0.062,
+      "sp500_equal_weight": 0.0437,
+      "overweight": 0.0183,
+      "total_contrib_pct": 4.81,
+      "avg_monthly_ret_pct": 1.932,
+      "months_represented": 158
+    },
+    "Materials": {
+      "avg_portfolio_weight": 0.0431,
+      "sp500_equal_weight": 0.0517,
+      "overweight": -0.0086,
+      "total_contrib_pct": 2.9,
+      "avg_monthly_ret_pct": 1.694,
+      "months_represented": 190
+    },
+    "Financials": {
+      "avg_portfolio_weight": 0.1223,
+      "sp500_equal_weight": 0.1511,
+      "overweight": -0.0288,
+      "total_contrib_pct": 1.33,
+      "avg_monthly_ret_pct": 1.169,
+      "months_represented": 193
+    },
+    "Real Estate": {
+      "avg_portfolio_weight": 0.0555,
+      "sp500_equal_weight": 0.0616,
+      "overweight": -0.0062,
+      "total_contrib_pct": 0.42,
+      "avg_monthly_ret_pct": 1.301,
+      "months_represented": 180
+    },
+    "Consumer Staples": {
+      "avg_portfolio_weight": 0.0598,
+      "sp500_equal_weight": 0.0716,
+      "overweight": -0.0118,
+      "total_contrib_pct": -1.64,
+      "avg_monthly_ret_pct": 1.533,
+      "months_represented": 178
+    },
+    "Utilities": {
+      "avg_portfolio_weight": 0.0504,
+      "sp500_equal_weight": 0.0616,
+      "overweight": -0.0112,
+      "total_contrib_pct": -4.8,
+      "avg_monthly_ret_pct": 1.7,
+      "months_represented": 137
+    }
+  },
+  "d3_posthoc": {
+    "baseline (12-1, top 20%)": {
+      "sharpe": 1.197,
+      "spy_sharpe": 0.982,
+      "excess_sharpe": 0.215,
+      "ir": 0.779,
+      "n": 194,
+      "note": "Phase C result"
+    },
+    "sector-neutral (12-1, top 20% per sector)": {
+      "sharpe": 1.29,
+      "spy_sharpe": 0.982,
+      "excess_sharpe": 0.308,
+      "ir": 0.973,
+      "n": 194,
+      "note": "POST-HOC OBSERVATION \u2014 discovered after Phase C results. Not a reformulation. Documented for research only per FX lab discipline (same rule as S4 reversed direction +0.57, S6 short-leg +0.36)."
+    },
+    "top 10% (12-1, decile)": {
+      "sharpe": 1.243,
+      "spy_sharpe": 0.982,
+      "excess_sharpe": 0.261,
+      "ir": 0.963,
+      "n": 194,
+      "note": "POST-HOC OBSERVATION \u2014 discovered after Phase C results. Not a reformulation. Documented for research only per FX lab discipline (same rule as S4 reversed direction +0.57, S6 short-leg +0.36)."
+    },
+    "6-1 month lookback (top 20%)": {
+      "sharpe": 1.224,
+      "spy_sharpe": 0.982,
+      "excess_sharpe": 0.242,
+      "ir": 0.752,
+      "n": 194,
+      "note": "POST-HOC OBSERVATION \u2014 discovered after Phase C results. Not a reformulation. Documented for research only per FX lab discipline (same rule as S4 reversed direction +0.57, S6 short-leg +0.36)."
+    },
+    "quarterly rebalancing (12-1, top 20%)": {
+      "sharpe": 0.387,
+      "spy_sharpe": -0.002,
+      "excess_sharpe": 0.389,
+      "ir": 1.001,
+      "n": 65,
+      "note": "POST-HOC OBSERVATION \u2014 discovered after Phase C results. Not a reformulation. Documented for research only per FX lab discipline (same rule as S4 reversed direction +0.57, S6 short-leg +0.36)."
+    },
+    "sector-neutral top 10%": {
+      "sharpe": 1.282,
+      "spy_sharpe": 0.982,
+      "excess_sharpe": 0.3,
+      "ir": 0.962,
+      "n": 194,
+      "note": "POST-HOC OBSERVATION \u2014 discovered after Phase C results. Not a reformulation. Documented for research only per FX lab discipline (same rule as S4 reversed direction +0.57, S6 short-leg +0.36)."
+    }
+  },
+  "d4_distribution": {
+    "excess_mean_monthly_pct": 0.479,
+    "excess_std_monthly_pct": 2.175,
+    "excess_skew": 0.077,
+    "excess_kurt": 0.059,
+    "pct_months_beat_spy": 59.3,
+    "worst_excess_month": -5.13,
+    "worst_excess_month_date": "2023-01-31",
+    "best_excess_month": 7.48,
+    "best_excess_month_date": "2024-02-29",
+    "avg_turnover_pct": 22.9,
+    "avg_n_stocks": 92.3
+  }
+}
