@@ -242,121 +242,212 @@ def fetch_spy_benchmark() -> pd.Series:
 
 # ── 4. Simfin P/B Ratios ──────────────────────────────────────────────────────
 
-def fetch_pb_ratios(tickers: list[str]) -> dict[str, pd.DataFrame]:
-    """Fetch quarterly point-in-time P/B ratios via Simfin.
+def _simfin_setup() -> tuple:
+    """Initialise Simfin, return (sf, ok: bool)."""
+    api_key = os.getenv('SIMFIN_API_KEY', '').strip()
+    if not api_key:
+        return None, False
+    try:
+        import simfin as sf
+        sf.set_api_key(api_key)
+        simfin_dir = DATA_DIR / 'simfin_cache'
+        simfin_dir.mkdir(exist_ok=True)
+        sf.set_data_dir(str(simfin_dir))
+        return sf, True
+    except ImportError:
+        return None, False
 
-    Returns dict[ticker -> DataFrame] with columns:
-      report_date, publish_date, pb_ratio
 
-    Point-in-time: publish_date is when the filing became public.
-    At rebalance date T, use the most recent row where publish_date <= T.
+def _extract_pb_from_dataset(derived, tickers: list[str]) -> dict[str, pd.DataFrame]:
+    """Pull per-ticker P/B from a Simfin derived-shareprices DataFrame."""
+    pb_col = next((c for c in derived.columns
+                   if 'Book' in c or 'P/B' in c or 'book' in c.lower()), None)
+    pub_col = next((c for c in derived.columns
+                    if 'Publish' in c or 'publish' in c.lower()), None)
+    if pb_col is None:
+        return {}
+
+    results = {}
+    all_tickers_in_df = set(derived.index.get_level_values('Ticker'))
+
+    for tkr in tickers:
+        tkr_sf = tkr.replace('-', '.')
+        match = tkr_sf if tkr_sf in all_tickers_in_df else \
+                (tkr if tkr in all_tickers_in_df else None)
+        if match is None:
+            continue
+        try:
+            sub = derived.xs(match, level='Ticker')[[pb_col]].copy()
+            sub.columns = ['pb_ratio']
+            sub = sub.dropna()
+            if sub.empty:
+                continue
+            if not isinstance(sub.index, pd.DatetimeIndex):
+                sub.index = pd.to_datetime(sub.index)
+            if pub_col:
+                pub = derived.xs(match, level='Ticker')[pub_col]
+                sub['publish_date'] = pd.to_datetime(pub.values)
+            else:
+                sub['publish_date'] = sub.index + pd.offsets.Day(45)
+            sub.index.name = 'report_date'
+            results[tkr] = sub.reset_index()[['report_date', 'publish_date', 'pb_ratio']]
+        except Exception:
+            continue
+    return results
+
+
+def _compute_pb_from_balance(
+    sf, tickers: list[str], prices: dict[str, pd.Series]
+) -> dict[str, pd.DataFrame]:
+    """Compute P/B from balance sheet + yfinance prices.
+
+    Balance sheet already contains Total Equity AND Shares (Basic) AND Publish Date.
+    P/B = price_at_month_end_before_publish_date / (Total Equity / Shares Basic)
+    """
+    results: dict[str, pd.DataFrame] = {}
+
+    for variant in ['quarterly', 'annual']:
+        try:
+            print(f"    Loading balance sheet ({variant})...")
+            balance = sf.load_balance(market='us', variant=variant)
+            print(f"    ✓ {len(balance)} rows, "
+                  f"{balance.index.get_level_values('Ticker').nunique()} tickers")
+            break
+        except Exception as e:
+            print(f"    [{variant} failed: {e}]")
+            balance = None
+
+    if balance is None:
+        return {}
+
+    eq_col  = next((c for c in balance.columns
+                    if c in ('Total Equity', 'Common Equity',
+                              "Total Shareholders' Equity")), None)
+    sh_col  = next((c for c in balance.columns
+                    if c in ('Shares (Basic)', 'Shares (Diluted)',
+                              'Basic Shares Outstanding')), None)
+    pub_col = next((c for c in balance.columns
+                    if 'Publish' in c), None)
+
+    print(f"    equity='{eq_col}'  shares='{sh_col}'  publish='{pub_col}'")
+    if eq_col is None or sh_col is None:
+        print("    ✗ Required columns missing from balance sheet")
+        return {}
+
+    all_tickers = set(balance.index.get_level_values('Ticker'))
+
+    for tkr in tickers:
+        tkr_sf = tkr.replace('-', '.')
+        match  = tkr_sf if tkr_sf in all_tickers else \
+                 (tkr    if tkr    in all_tickers else None)
+        if match is None:
+            continue
+        try:
+            sub = balance.xs(match, level='Ticker').copy()
+            if not isinstance(sub.index, pd.DatetimeIndex):
+                sub.index = pd.to_datetime(sub.index)
+
+            sub = sub[[eq_col, sh_col] + ([pub_col] if pub_col else [])].copy()
+            sub = sub.dropna(subset=[eq_col, sh_col])
+            sub = sub[sub[sh_col] > 0]
+            if sub.empty:
+                continue
+
+            sub['bvps'] = sub[eq_col] / sub[sh_col]
+            sub = sub[sub['bvps'] > 0]
+
+            if pub_col:
+                sub['publish_date'] = pd.to_datetime(sub[pub_col])
+            else:
+                sub['publish_date'] = sub.index + pd.offsets.Day(45)
+
+            price_series = prices.get(tkr)
+            if price_series is None or price_series.empty:
+                continue
+
+            rows = []
+            for rpt_date, row in sub.iterrows():
+                pub_date = row['publish_date']
+                bvps     = row['bvps']
+                if pd.isna(pub_date) or pd.isna(bvps) or bvps <= 0:
+                    continue
+                avail = price_series[price_series.index <= pub_date]
+                if avail.empty:
+                    continue
+                price = float(avail.iloc[-1])
+                rows.append({
+                    'report_date':  rpt_date,
+                    'publish_date': pub_date,
+                    'pb_ratio':     price / bvps,
+                })
+
+            if rows:
+                results[tkr] = pd.DataFrame(rows)
+
+        except Exception:
+            continue
+
+    return results
+
+
+def fetch_pb_ratios(
+    tickers: list[str],
+    prices: dict[str, pd.Series] | None = None,
+) -> dict[str, pd.DataFrame]:
+    """Fetch quarterly point-in-time P/B ratios.
+
+    Strategy (in order):
+      1. Simfin derived-shareprices quarterly
+      2. Simfin derived-shareprices annual
+      3. Compute from Simfin balance sheet + income + cached yfinance prices
+
+    Returns dict[ticker -> DataFrame(report_date, publish_date, pb_ratio)].
     """
     api_key = os.getenv('SIMFIN_API_KEY', '').strip()
     if not api_key:
         print("\n── Simfin P/B ratios...")
         print("  ✗ SIMFIN_API_KEY not set.")
-        print("  → Register free at https://simfin.com/login, get API key,")
-        print("    add SIMFIN_API_KEY=<key> to .env file, re-run pipeline.")
         return {}
 
-    try:
-        import simfin as sf
-    except ImportError:
+    sf, ok = _simfin_setup()
+    if not ok:
         print("  ✗ simfin not installed. Run: pip install simfin")
         return {}
 
     print(f"\n── Simfin P/B ratios ({len(tickers)} tickers)...")
-    sf.set_api_key(api_key)
-    simfin_dir = DATA_DIR / 'simfin_cache'
-    simfin_dir.mkdir(exist_ok=True)
-    sf.set_data_dir(str(simfin_dir))
-
     results: dict[str, pd.DataFrame] = {}
 
-    try:
-        # Load quarterly derived data — includes P/Book, REPORT_DATE, PUBLISH_DATE
-        print("  Downloading Simfin derived shareprices (quarterly)...")
-        derived = sf.load_derived_shareprices(
-            market='us',
-            variant='quarterly',
-        )
+    # Attempt 1 & 2: derived shareprices (quarterly then annual)
+    for variant in ['quarterly', 'annual']:
+        try:
+            print(f"  Trying derived shareprices ({variant})...")
+            derived = sf.load_derived_shareprices(market='us', variant=variant)
+            if derived is not None and not derived.empty:
+                results = _extract_pb_from_dataset(derived, tickers)
+                if results:
+                    print(f"  ✓ Derived shareprices ({variant}): "
+                          f"{len(results)} tickers")
+                    break
+        except Exception as e:
+            print(f"  [{variant} derived: {type(e).__name__}]")
 
-        if derived is None or derived.empty:
-            print("  ✗ Simfin returned empty dataset")
-            return {}
+    # Attempt 3: compute from balance + income + yfinance prices
+    if not results:
+        print("  Falling back to balance sheet computation...")
+        if prices is None:
+            print("  ✗ prices dict not provided for fallback")
+        else:
+            results = _compute_pb_from_balance(sf, tickers, prices)
 
-        print(f"  ✓ Simfin: {len(derived)} rows, "
-              f"companies: {derived.index.get_level_values('Ticker').nunique()}")
+    n_ok = len(results)
+    pct  = n_ok / len(tickers) * 100
+    print(f"  P/B coverage: {n_ok}/{len(tickers)} = {pct:.1f}%  "
+          f"({'✓ PASS' if pct >= PB_COV_GATE * 100 else '✗ FAIL'})")
 
-        # Extract P/B per ticker with PUBLISH_DATE
-        pb_col = next(
-            (c for c in derived.columns if 'Book' in c or 'P/B' in c),
-            None
-        )
-        if pb_col is None:
-            print(f"  ✗ P/B column not found. Columns: {list(derived.columns[:10])}")
-            return {}
+    for tkr, df in results.items():
+        df.to_parquet(CACHE_DIR / f'pb_{tkr}.parquet', index=False)
 
-        print(f"  Using column: '{pb_col}'")
-
-        for tkr in tickers:
-            tkr_clean = tkr.replace('-', '.')  # Simfin uses BRK.B, not BRK-B
-            try:
-                sub = derived.xs(tkr_clean, level='Ticker') if tkr_clean in \
-                    derived.index.get_level_values('Ticker') else \
-                    derived.xs(tkr, level='Ticker')
-
-                sub = sub[[pb_col]].copy()
-                sub.columns = ['pb_ratio']
-                sub = sub.dropna()
-
-                if len(sub) == 0:
-                    continue
-
-                # Normalize index to timestamp
-                if not isinstance(sub.index, pd.DatetimeIndex):
-                    sub.index = pd.to_datetime(sub.index)
-
-                # Separate REPORT_DATE (index) and PUBLISH_DATE
-                # Simfin index is REPORT_DATE; PUBLISH_DATE often in columns
-                pub_col = next(
-                    (c for c in derived.columns
-                     if 'Publish' in c or 'PUBLISH' in c),
-                    None
-                )
-                if pub_col:
-                    try:
-                        pub_data = derived.xs(tkr_clean, level='Ticker')[pub_col]
-                        if not isinstance(pub_data.index, pd.DatetimeIndex):
-                            pub_data.index = pd.to_datetime(pub_data.index)
-                        sub['publish_date'] = pd.to_datetime(pub_data)
-                    except Exception:
-                        sub['publish_date'] = sub.index + pd.offsets.Day(45)
-                else:
-                    # Conservative fallback: assume 45-day lag from report date
-                    sub['publish_date'] = sub.index + pd.offsets.Day(45)
-
-                sub.index.name = 'report_date'
-                sub = sub.reset_index()
-                results[tkr] = sub[['report_date', 'publish_date', 'pb_ratio']]
-
-            except (KeyError, Exception):
-                continue
-
-        n_ok  = len(results)
-        pct   = n_ok / len(tickers) * 100
-        print(f"  P/B coverage: {n_ok}/{len(tickers)} = {pct:.1f}%  "
-              f"({'✓ PASS' if pct >= PB_COV_GATE * 100 else '✗ FAIL'})")
-
-        # Cache per-ticker
-        for tkr, df in results.items():
-            df.to_parquet(CACHE_DIR / f'pb_{tkr}.parquet', index=False)
-
-        return results
-
-    except Exception as e:
-        print(f"  ✗ Simfin error: {type(e).__name__}: {e}")
-        return {}
+    return results
 
 
 # ── 5. Quality Report ─────────────────────────────────────────────────────────
@@ -460,7 +551,7 @@ def main() -> None:
     spy_ret = fetch_spy_benchmark()
 
     # Step 4: P/B
-    pb = fetch_pb_ratios(tickers)
+    pb = fetch_pb_ratios(tickers, prices=prices)
 
     # Step 5: Quality report
     print("\n── Quality Report...")
