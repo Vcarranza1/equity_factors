@@ -1,0 +1,138 @@
+{
+  "run_timestamp": "2026-04-27T14:13:31.604927",
+  "period": "2010-03 \u2192 2026-04",
+  "metrics": {
+    "n_months": 194,
+    "0x": {
+      "sharpe": 1.197,
+      "spy_sharpe": 0.982,
+      "excess_sharpe": 0.215,
+      "ir": 0.779,
+      "max_active_dd": -0.1328,
+      "max_abs_dd": -0.209,
+      "ann_ret_pct": 20.34,
+      "ann_vol_pct": 16.99,
+      "win_rate_vs_spy": 0.598,
+      "win_rate_abs": 0.686,
+      "total_ret_pct": 1979.67
+    },
+    "0.5x": {
+      "sharpe": 1.193,
+      "spy_sharpe": 0.982,
+      "excess_sharpe": 0.212,
+      "ir": 0.77,
+      "max_active_dd": -0.1333,
+      "max_abs_dd": -0.2092,
+      "ann_ret_pct": 20.28,
+      "ann_vol_pct": 16.99,
+      "win_rate_vs_spy": 0.593,
+      "win_rate_abs": 0.686,
+      "total_ret_pct": 1959.36
+    },
+    "1x": {
+      "sharpe": 1.19,
+      "spy_sharpe": 0.982,
+      "excess_sharpe": 0.208,
+      "ir": 0.762,
+      "max_active_dd": -0.1338,
+      "max_abs_dd": -0.2094,
+      "ann_ret_pct": 20.22,
+      "ann_vol_pct": 16.99,
+      "win_rate_vs_spy": 0.593,
+      "win_rate_abs": 0.686,
+      "total_ret_pct": 1939.26
+    },
+    "2x": {
+      "sharpe": 1.183,
+      "spy_sharpe": 0.982,
+      "excess_sharpe": 0.201,
+      "ir": 0.746,
+      "max_active_dd": -0.1348,
+      "max_abs_dd": -0.2099,
+      "ann_ret_pct": 20.1,
+      "ann_vol_pct": 16.99,
+      "win_rate_vs_spy": 0.593,
+      "win_rate_abs": 0.686,
+      "total_ret_pct": 1899.63
+    },
+    "gate_results": {
+      "ir": {
+        "value": 0.762,
+        "gate": ">= 0.5",
+        "pass": "True"
+      },
+      "excess_sharpe": {
+        "value": 0.208,
+        "gate": ">= 0.3",
+        "pass": "False"
+      },
+      "max_active_dd": {
+        "value": -0.1338,
+        "gate": "> -0.15",
+        "pass": true
+      },
+      "all_pass": false
+    },
+    "survivorship_bias_note": "Pre-committed haircut: -0.10 to -0.20 excess Sharpe. Bias-adjusted excess Sharpe range: [0.008, 0.108]"
+  },
+  "stress": {
+    "stress_months": {
+      "2011-08": {
+        "label": "US credit downgrade / S&P 500 -6.3%",
+        "strategy": -8.05,
+        "spy": -5.5,
+        "excess": -2.56,
+        "n_stocks": 81,
+        "pass": false
+      },
+      "2015-08": {
+        "label": "China devaluation shock / flash crash",
+        "strategy": -5.33,
+        "spy": -6.09,
+        "excess": 0.77,
+        "n_stocks": 91,
+        "pass": true
+      },
+      "2018-02": {
+        "label": "VIX spike, short-vol unwind",
+        "strategy": -2.39,
+        "spy": -3.64,
+        "excess": 1.25,
+        "n_stocks": 94,
+        "pass": true
+      },
+      "2020-03": {
+        "label": "COVID crash",
+        "strategy": -14.51,
+        "spy": -13.0,
+        "excess": -1.51,
+        "n_stocks": 95,
+        "pass": false
+      },
+      "2022-01": {
+        "label": "Rate-hike repricing, growth selloff",
+        "strategy": -5.89,
+        "spy": -4.94,
+        "excess": -0.95,
+        "n_stocks": 97,
+        "pass": false
+      }
+    },
+    "adversarial_periods": {
+      "Q4 2018 momentum crash": {
+        "period": "2018-09 \u2192 2018-12",
+        "strategy_cum": -16.88,
+        "spy_cum": -13.52,
+        "excess_cum": -3.35,
+        "n_months": 4
+      },
+      "Post-COVID momentum reversal": {
+        "period": "2020-05 \u2192 2020-05",
+        "strategy_cum": 7.51,
+        "spy_cum": 4.76,
+        "excess_cum": 2.75,
+        "n_months": 1
+      }
+    }
+  }
+}
